@@ -1,5 +1,5 @@
 {
-	"name": "zenify/doctrine-behaviors",
+	"name": "martinadamec/doctrine-behaviors",
 	"description": "Integration of KnpLabs/DoctrineBehaviors to Nette\\DI",
 	"license": "MIT",
 	"authors": [
