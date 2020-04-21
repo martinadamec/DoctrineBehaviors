@@ -1,13 +1,11 @@
 <?php
-
 declare(strict_types=1);
 
 /*
- * This file is part of Zenify
- * Copyright (c) 2012 Tomas Votruba (http://tomasvotruba.cz)
+ * Copyright (c) 2020 Martin Adamec (https://adamecmartin.cz)
  */
 
-namespace Zenify\DoctrineBehaviors\Entities\Attributes;
+namespace MartinAdamec\DoctrineBehaviors\Entities\Attributes;
 
 
 /**

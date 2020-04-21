@@ -3,19 +3,15 @@
 declare(strict_types=1);
 
 /*
- * This file is part of Zenify
- * Copyright (c) 2012 Tomas Votruba (http://tomasvotruba.cz)
+ * Copyright (c) 2020 Martin Adamec (https://adamecmartin.cz)
  */
 
-namespace Zenify\DoctrineBehaviors\DI;
+namespace MartinAdamec\DoctrineBehaviors\DI;
 
-use Kdyby;
-use Kdyby\Events\DI\EventsExtension;
-use Knp\DoctrineBehaviors\Model\Translatable\Translation;
-use Knp\DoctrineBehaviors\ORM\Translatable\TranslatableSubscriber;
+use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
+use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
 use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
-use Zenify\DoctrineBehaviors\Entities\Attributes\Translatable;
 
 
 final class TranslatableExtension extends AbstractBehaviorExtension
@@ -27,8 +23,8 @@ final class TranslatableExtension extends AbstractBehaviorExtension
 	private $default = [
 		'currentLocaleCallable' => NULL,
 		'defaultLocaleCallable' => NULL,
-		'translatableTrait' => Translatable::class,
-		'translationTrait' => Translation::class,
+		'translatableTrait' => TranslatableInterface::class,
+		'translationTrait' => TranslationInterface::class,
 		'translatableFetchMode' => 'LAZY',
 		'translationFetchMode' => 'LAZY',
 	];
@@ -41,8 +37,8 @@ final class TranslatableExtension extends AbstractBehaviorExtension
 		$builder = $this->getContainerBuilder();
 
 		$builder->addDefinition($this->prefix('listener'))
-			->setClass(TranslatableSubscriber::class, [
-				'@' . $this->getClassAnalyzer()->getClass(),
+			->setFactory(TranslatableInterface::class, [
+				// '@' . $this->getClassAnalyzer()->getType(),
 				$config['currentLocaleCallable'],
 				$config['defaultLocaleCallable'],
 				$config['translatableTrait'],
@@ -50,8 +46,7 @@ final class TranslatableExtension extends AbstractBehaviorExtension
 				$config['translatableFetchMode'],
 				$config['translationFetchMode']
 			])
-			->setAutowired(FALSE)
-			->addTag(EventsExtension::TAG_SUBSCRIBER);
+			->setAutowired(FALSE);
 	}
 
 
