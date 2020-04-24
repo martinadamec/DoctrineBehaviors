@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare( strict_types=1 );
 
 /*
  * Copyright (c) 2020 Martin Adamec (https://adamecmartin.cz)
@@ -8,8 +8,8 @@ declare(strict_types=1);
 
 namespace MartinAdamec\DoctrineBehaviors\DI;
 
-use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
-use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
+use Knp\DoctrineBehaviors\Model\Translatable\TranslatableTrait;
+use Knp\DoctrineBehaviors\Model\Translatable\TranslationTrait;
 use Nette\Utils\AssertionException;
 use Nette\Utils\Validators;
 
@@ -20,33 +20,37 @@ final class TranslatableExtension extends AbstractBehaviorExtension
 	/**
 	 * @var array
 	 */
-	private $default = [
-		'currentLocaleCallable' => NULL,
-		'defaultLocaleCallable' => NULL,
-		'translatableTrait' => TranslatableInterface::class,
-		'translationTrait' => TranslationInterface::class,
+	private array $default = [
+		'currentLocaleCallable' => null,
+		'defaultLocaleCallable' => null,
+		'translatableType' => TranslatableTrait::class,
+		'translationType' => TranslationTrait::class,
 		'translatableFetchMode' => 'LAZY',
 		'translationFetchMode' => 'LAZY',
 	];
 
 
+	/**
+	 * @inheritDoc
+	 * @throws AssertionException
+	 */
 	public function loadConfiguration()
 	{
-		$config = $this->getConfig($this->default);
+		$config = array_merge($this->default, $this->getConfig());
 		$this->validateConfigTypes($config);
 		$builder = $this->getContainerBuilder();
 
 		$builder->addDefinition($this->prefix('listener'))
-			->setFactory(TranslatableInterface::class, [
-				// '@' . $this->getClassAnalyzer()->getType(),
-				$config['currentLocaleCallable'],
-				$config['defaultLocaleCallable'],
-				$config['translatableTrait'],
-				$config['translationTrait'],
-				$config['translatableFetchMode'],
-				$config['translationFetchMode']
+			->setType(TranslatableTrait::class, [
+				'@' . $this->getClassAnalyzer()->getType(),
+				$config[ 'currentLocaleCallable' ],
+				$config[ 'defaultLocaleCallable' ],
+				$config[ 'translatableType' ],
+				$config[ 'translationType' ],
+				$config[ 'translatableFetchMode' ],
+				$config[ 'translationFetchMode' ],
 			])
-			->setAutowired(FALSE);
+			->setAutowired(false);
 	}
 
 
@@ -56,8 +60,8 @@ final class TranslatableExtension extends AbstractBehaviorExtension
 	private function validateConfigTypes(array $config)
 	{
 		Validators::assertField($config, 'currentLocaleCallable', 'null|array');
-		Validators::assertField($config, 'translatableTrait', 'type');
-		Validators::assertField($config, 'translationTrait', 'type');
+		Validators::assertField($config, 'translatableType', 'type');
+		Validators::assertField($config, 'translationType', 'type');
 		Validators::assertField($config, 'translatableFetchMode', 'string');
 		Validators::assertField($config, 'translationFetchMode', 'string');
 	}
